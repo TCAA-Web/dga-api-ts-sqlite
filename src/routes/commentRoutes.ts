@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { createRecord, deleteRecord, getRecords } from '../controllers/commentController';
-import { Authorize } from '../middleware/authMiddleware';
+import { Authorize } from '../middleware/authMiddleware.js';
+import { commentController } from '../controllers/commentController.js';
 
 const routes = Router();
-routes.get('/:productId', getRecords);
-routes.post('/', Authorize, createRecord);
-routes.delete('/:id', Authorize, deleteRecord);
+routes.get('/:productId', commentController.getRecords);
+routes.post('/', Authorize, commentController.createRecord);
+routes.delete('/:id', Authorize, commentController.deleteRecord);
 
 export const commentRoutes = routes;

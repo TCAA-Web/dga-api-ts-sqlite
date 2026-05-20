@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { getRecord, getRecords } from '../controllers/categoryController';
+import { categoryController } from '../controllers/categoryController.js';
 
 const routes = Router();
-routes.get('/', getRecords);
-routes.get('/:id', getRecord);
+routes.get('/', categoryController.getRecords);
+routes.get('/:id', categoryController.getRecord);
 
 export const categoryRoutes = routes;
