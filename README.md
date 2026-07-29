@@ -28,14 +28,21 @@ cp .env.example .env
 ```bash
 npm install
 ```
-### 4. Start serveren
+### 4. Generate client
+```bash
+npm run generate
+```
+### 5. Start serveren
 ```bash
 npm run dev
 ```
-### 5. Få overblik over data
+### 6. Få overblik over data
 ```bash
 npx prisma studio
 ```
 Nu skulle du gerne kunne se en oversigt over dine modeller og data i din browser. Det er Prismas admin-panel til din database.
 
 Klik på en af modellerne til venstre hvis du vil se og redigere data.
+
+## Postman dokumentation
+https://documenter.getpostman.com/view/6540576/2sB3HhsMet
