@@ -52,9 +52,15 @@ model Comment {
   @@map("comments")
 }
 
+model Newsletter {
+  id          Int     @id @default(autoincrement())
+  email       String  @unique
+}
+
 model Product {
   id          Int     @id @default(autoincrement())
   name        String
+  created_at  DateTime  @default(now())
   image       String
   description String  // -> Lang tekst
   price       Decimal // -> Decimaltal til pris

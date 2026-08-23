@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
-import { prisma } from '../prisma.js';
+import { Request, Response } from "express";
+import { prisma } from "../prisma.js";
 
 class CommentController {
-
   async getRecords(req: Request, res: Response) {
     const { productId } = req.params;
 
@@ -10,28 +9,28 @@ class CommentController {
       const data = await prisma.comment.findMany({
         where: {
           product: {
-            id: Number(productId)
-          }
+            id: Number(productId),
+          },
         },
         select: {
           comment: true,
+          id: true,
           user: {
             select: {
               firstname: true,
               lastname: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+        },
       });
 
       res.json(data);
-
     } catch (error) {
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to fetch categories'
+        error: "Failed to fetch comments",
       });
     }
   }
@@ -42,23 +41,22 @@ class CommentController {
     try {
       const data = await prisma.comment.findUnique({
         where: {
-          id: Number(id)
-        }
+          id: Number(id),
+        },
       });
 
       if (!data) {
         return res.status(404).json({
-          error: 'Category not found'
+          error: "Category not found",
         });
       }
 
       res.json(data);
-
     } catch (error) {
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to fetch category'
+        error: "Failed to fetch comment",
       });
     }
   }
@@ -69,7 +67,7 @@ class CommentController {
 
     if (!comment || !productId) {
       return res.status(400).json({
-        error: 'Comment and product id are required'
+        error: "Comment and product id are required",
       });
     }
 
@@ -78,17 +76,16 @@ class CommentController {
         data: {
           comment,
           userId: Number(userId),
-          productId: Number(productId)
-        }
+          productId: Number(productId),
+        },
       });
 
       res.status(201).json(product);
-
     } catch (error) {
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to create comment'
+        error: "Failed to create comment",
       });
     }
   }
@@ -101,19 +98,18 @@ class CommentController {
       await prisma.comment.delete({
         where: {
           id: Number(id),
-          userId: Number(userId)
-        }
+          userId: Number(userId),
+        },
       });
 
       res.status(200).json({
-        message: 'Comment deleted'
+        message: "Comment deleted",
       });
-
     } catch (error) {
       console.error(error);
 
       res.status(500).json({
-        error: 'Failed to delete comment'
+        error: "Failed to delete comment",
       });
     }
   }
