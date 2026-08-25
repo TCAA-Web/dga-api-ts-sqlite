@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
-import { prisma } from '../prisma.js';
-import bcrypt from 'bcrypt';
+import { Request, Response } from "express";
+import { prisma } from "../prisma.js";
+import bcrypt from "bcrypt";
+import { authController } from "./authController.js";
 
 class UserController {
   async getRecords(req: Request, res: Response) {
@@ -10,13 +11,13 @@ class UserController {
           id: true,
           firstname: true,
           lastname: true,
-          email: true
-        }
+          email: true,
+        },
       });
       res.json(users);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch users' });
+      res.status(500).json({ error: "Failed to fetch users" });
     }
   }
 
@@ -25,7 +26,7 @@ class UserController {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          id: Number(id)
+          id: Number(id),
         },
         select: {
           id: true,
@@ -37,16 +38,16 @@ class UserController {
           email: true,
           hasNewsletter: true,
           hasNotification: true,
-          isActive: true
-        }
+          isActive: true,
+        },
       });
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
       res.json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to fetch user' });
+      res.status(500).json({ error: "Failed to fetch user" });
     }
   }
 
@@ -61,17 +62,20 @@ class UserController {
       password,
       hasNewsletter,
       hasNotification,
-      refreshToken,
-      isActive
+      isActive,
     } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
+      return res.status(400).json({ error: "Email and password are required" });
     }
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
+      const users = await prisma.user.findMany();
 
+      const nextId =
+        users.length > 0 ? Math.max(...users.map((user) => user.id)) + 1 : 1;
+      console.log("Next ID:", nextId); // Log the next ID for debugging
       const user = await prisma.user.create({
         data: {
           firstname,
@@ -83,15 +87,15 @@ class UserController {
           password: hashedPassword,
           hasNewsletter: Boolean(hasNewsletter),
           hasNotification: Boolean(hasNotification),
-          refreshToken,
-          isActive: Boolean(isActive)
-        }
+          isActive: Boolean(isActive),
+          refreshToken: authController.generateToken({ id: nextId }, "refresh"), // Generate
+        },
       });
 
       res.status(201).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to create user' });
+      res.status(500).json({ error: "Failed to create user" });
     }
   }
 
@@ -108,11 +112,14 @@ class UserController {
       hasNewsletter,
       hasNotification,
       refreshToken,
-      isActive
+      isActive,
     } = req.body;
 
     const isActiveParsed =
-      isActive === 'true' || isActive === true || isActive === 1 || isActive === '1';
+      isActive === "true" ||
+      isActive === true ||
+      isActive === 1 ||
+      isActive === "1";
 
     try {
       const dataToUpdate: any = {
@@ -125,7 +132,7 @@ class UserController {
         hasNewsletter: Boolean(hasNewsletter),
         hasNotification: Boolean(hasNotification),
         refreshToken,
-        isActive: isActiveParsed
+        isActive: isActiveParsed,
       };
 
       if (password) {
@@ -134,15 +141,15 @@ class UserController {
 
       const user = await prisma.user.update({
         where: {
-          id: Number(id)
+          id: Number(id),
         },
-        data: dataToUpdate
+        data: dataToUpdate,
       });
 
       res.status(200).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to update user' });
+      res.status(500).json({ error: "Failed to update user" });
     }
   }
 
@@ -152,16 +159,16 @@ class UserController {
     try {
       await prisma.user.delete({
         where: {
-          id: Number(id)
-        }
+          id: Number(id),
+        },
       });
 
       res.status(200).json({
-        message: 'User deleted'
+        message: "User deleted",
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Failed to delete user' });
+      res.status(500).json({ error: "Failed to delete user" });
     }
   }
 }

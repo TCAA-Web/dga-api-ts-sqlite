@@ -23,7 +23,7 @@ model User {
   password        String
   hasNewsletter   Boolean   @default(false) // -> Bool med default true
   hasNotification Boolean   @default(false) // -> Bool med default true
-  refreshToken    String
+  refreshToken    String    
   isActive        Boolean   @default(true) // -> Bool med default true
   products        Product[]
   Comment         Comment[]
