@@ -12,16 +12,8 @@ class CommentController {
             id: Number(productId),
           },
         },
-        select: {
-          comment: true,
-          id: true,
-          user: {
-            select: {
-              firstname: true,
-              lastname: true,
-              email: true,
-            },
-          },
+        include: {
+          user: true,
         },
       });
 

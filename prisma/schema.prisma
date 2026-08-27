@@ -45,7 +45,7 @@ model Comment {
   comment   String
   userId    Int
   productId Int
-
+  createdAt DateTime @default(now()) 
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 
