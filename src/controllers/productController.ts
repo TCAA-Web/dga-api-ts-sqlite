@@ -21,12 +21,6 @@ class ProductController {
             slug: String(slug),
           },
         },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          price: true,
-        },
       });
       res.json(data);
     } catch (error) {
